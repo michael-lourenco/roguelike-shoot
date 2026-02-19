@@ -189,38 +189,48 @@ public class UIManager : MonoBehaviour
 
         CreateText("UpgradeTitle", upgradePanel.transform,
             new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-            new Vector2(-300, 180), new Vector2(300, 240),
+            new Vector2(-300, 140), new Vector2(300, 200),
             "SUBIU DE NÍVEL!", 40);
 
         CreateText("UpgradeSubtitle", upgradePanel.transform,
             new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-            new Vector2(-300, 140), new Vector2(300, 180),
+            new Vector2(-300, 100), new Vector2(300, 140),
             "Escolha um upgrade:", 24);
 
         upgradeButtons = new Button[3];
         upgradeTexts = new Text[3];
 
+        float cardWidth = 240f;
+        float cardHeight = 160f;
+        float gap = 30f;
+        float totalWidth = cardWidth * 3 + gap * 2;
+        float startX = -totalWidth / 2f;
+        float cardY = -20f;
+
         for (int i = 0; i < 3; i++)
         {
-            float yCenter = 60f - i * 90f;
+            float xLeft = startX + i * (cardWidth + gap);
+            float xRight = xLeft + cardWidth;
 
             GameObject btnObj = CreatePanel($"UpgradeBtn{i}", upgradePanel.transform,
                 new Vector2(0.5f, 0.5f), new Vector2(0.5f, 0.5f),
-                new Vector2(-200, yCenter - 35), new Vector2(200, yCenter + 35),
-                new Color(0.15f, 0.15f, 0.35f, 1f));
+                new Vector2(xLeft, cardY - cardHeight / 2f),
+                new Vector2(xRight, cardY + cardHeight / 2f),
+                Color.white);
 
             Button btn = btnObj.AddComponent<Button>();
             ColorBlock colors = btn.colors;
-            colors.normalColor = new Color(0.15f, 0.15f, 0.35f, 1f);
-            colors.highlightedColor = new Color(0.25f, 0.25f, 0.55f, 1f);
-            colors.pressedColor = new Color(0.1f, 0.1f, 0.25f, 1f);
-            colors.selectedColor = new Color(0.2f, 0.2f, 0.45f, 1f);
+            colors.normalColor = Color.white;
+            colors.highlightedColor = new Color(0.85f, 0.85f, 0.85f, 1f);
+            colors.pressedColor = new Color(0.7f, 0.7f, 0.7f, 1f);
+            colors.selectedColor = new Color(0.9f, 0.9f, 0.9f, 1f);
             btn.colors = colors;
 
             Text btnText = CreateText($"BtnText{i}", btnObj.transform,
                 Vector2.zero, Vector2.one,
-                new Vector2(10, 5), new Vector2(-10, -5),
-                "", 20);
+                new Vector2(15, 10), new Vector2(-15, -10),
+                "", 22);
+            btnText.color = Color.black;
 
             int index = i;
             btn.onClick.AddListener(() => OnUpgradeClicked(index));
@@ -301,7 +311,7 @@ public class UIManager : MonoBehaviour
             if (i < upgSys.currentOptions.Length)
             {
                 var opt = upgSys.currentOptions[i];
-                upgradeTexts[i].text = $"{opt.Name}\n<size=16>{opt.Description}</size>";
+                upgradeTexts[i].text = $"<b>{opt.Name}</b>\n\n<size=16>{opt.Description}</size>";
                 upgradeButtons[i].gameObject.SetActive(true);
             }
             else
