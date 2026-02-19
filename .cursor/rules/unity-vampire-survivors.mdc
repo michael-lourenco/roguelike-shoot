@@ -1,0 +1,63 @@
+---
+description: Regras globais do projeto SHOOT - jogo 2D estilo Vampire Survivors minimalista
+alwaysApply: true
+---
+
+# SHOOT - Regras do Projeto
+
+## Princípios Fundamentais
+
+- **ZERO assets externos**: Nenhum sprite, imagem, textura ou asset importado
+- **Tudo programático**: Todo GameObject, visual e UI criado via código C#
+- **Círculos apenas**: Todos os elementos visuais são círculos coloridos gerados por script
+- **Nenhum prefab**: Não criar prefabs no editor. Tudo instanciado via `CircleFactory`
+- **Nenhum Inspector**: Nenhuma referência atribuída via Inspector. Tudo resolvido em código
+- **Nenhuma cena manual**: A cena é montada automaticamente via `[RuntimeInitializeOnLoadMethod]`
+
+## Paleta de Cores
+
+- Player: `Color.blue` (azul)
+- Inimigos: `Color.red` (vermelho)
+- Projéteis: `Color.yellow` (amarelo)
+- XP Orbs: `Color.green` (verde)
+- Background: `Color.black` (preto)
+
+## Arquitetura
+
+- Código modular e desacoplado
+- Comunicação via `EventManager` (eventos estáticos)
+- `GameManager` como Singleton bootstrap
+- Cada sistema em seu próprio script
+- Usar `CircleFactory` para criar qualquer entidade visual
+- Componentes são adicionados via `AddComponent<T>()` em runtime
+
+## Restrições Técnicas
+
+- Unity 2D apenas (Physics2D, Rigidbody2D, CircleCollider2D)
+- Input legado (`Input.GetAxisRaw`, `Input.GetKeyDown`)
+- Sem ScriptableObjects, Addressables, ou Input System novo
+- Sem URP obrigatório
+- API Unity 6: usar `linearVelocity`, `linearDamping`, `FindObjectsByType`
+- Font: `LegacyRuntime.ttf` via `Resources.GetBuiltinResource<Font>`
+
+## Estrutura de Pastas
+
+```
+Assets/Scripts/
+  Core/       → GameManager, EventManager
+  Utils/      → CircleFactory
+  Player/     → PlayerController
+  Enemy/      → EnemySpawner, EnemyAI
+  Combat/     → WeaponSystem, Projectile
+  Progression/→ XPOrb, LevelSystem, UpgradeSystem
+  UI/         → UIManager
+```
+
+## Padrão para Novas Armas
+
+Para adicionar uma nova arma, criar um script que:
+1. Herda de `MonoBehaviour`
+2. Encontra alvos (inimigos)
+3. Usa `CircleFactory.CreateCircleWithPhysics` para criar projéteis
+4. Adiciona componente `Projectile` ou similar ao projétil
+5. Registra-se no `EventManager.OnUpgradeSelected` para upgrades
